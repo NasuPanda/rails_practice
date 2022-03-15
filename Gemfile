@@ -21,6 +21,11 @@ gem 'bootsnap',   '1.10.3', require: false
 group :development, :test do
   gem 'sqlite3', '1.4.1'
   gem 'byebug',  '11.0.1', platforms: [:mri, :mingw, :x64_mingw]
+  # RSpec
+  gem 'rspec-rails'
+  # テストデータの作成
+  gem 'factory_bot_rails'
+
 end
 
 group :development do
@@ -31,9 +36,19 @@ group :development do
 end
 
 group :test do
+  # テスト用 Railsデフォルトでダウンロードされている
   gem 'capybara',                 '3.28.0'
   gem 'selenium-webdriver',       '3.142.4'
   gem 'webdrivers',               '4.1.2'
+
+	# 便利なマッチャが使える
+	gem 'shoulda-matchers'
+	# テストの実行を並列に
+	gem 'parallel_tests'
+	# システムスペックのデバッグを便利に
+  gem 'launchy'
+
+
   gem 'rails-controller-testing', '1.0.4'
   gem 'minitest',                 '5.11.3'
   gem 'minitest-reporters',       '1.3.8'
