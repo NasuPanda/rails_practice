@@ -1,12 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let (:user) { FactoryBot.create(:user) }
+  let (:user) { FactoryBot.build(:user) }
+
+  it "saves an email as lower case" do
+    mixed_case_email = "Foo@ExAmPle.coM"
+    user.email = mixed_case_email
+    user.save
+    expect(mixed_case_email.downcase).to eq user.reload.email
+  end
 
   # 有効なユーザーのテスト
   context "with valid attributes" do
 
-    it "is valid with name and email" do
+    it "is valid with a name, email and password" do
       expect(user).to be_valid
     end
 
@@ -29,7 +36,7 @@ RSpec.describe User, type: :model do
       expect(user).to_not be_valid
     end
 
-    it "is invalid witout a email" do
+    it "is invalid witout an email" do
       user.email = ""
       expect(user).to_not be_valid
     end
@@ -51,6 +58,23 @@ RSpec.describe User, type: :model do
         user.email = invalid_address
         expect(user).to_not be_valid
       end
+    end
+
+    it "is invalid with a duplicate email" do
+      duplicate_user = user.dup
+      duplicate_user.email = user.email.upcase
+      user.save
+      expect(duplicate_user).to_not be_valid
+    end
+
+    it "is invalid without a password" do
+      user.password = user.password_confirmation = "" * 6
+      expect(user).not_to be_valid
+    end
+
+    it "is invalid with a too short password" do
+      user.password = user.password_confirmation = "abcde"
+      expect(user).not_to be_valid
     end
 
   end
