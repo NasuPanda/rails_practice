@@ -10,8 +10,8 @@ RSpec.describe ApplicationHelper, type: :helper do
       end
     end
 
-    context "don't exits argment string" do
-      it "returns baset title" do
+    context "not exist argment string" do
+      it "returns base title" do
         expect(full_title).to eq "#{base_title}"
       end
     end
