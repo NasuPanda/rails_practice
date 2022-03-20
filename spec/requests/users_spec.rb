@@ -7,7 +7,7 @@ RSpec.describe "Users", type: :request do
       expect(response).to have_http_status :ok
     end
 
-    it "have a correct title" do
+    it "has a correct title" do
       get signup_path
       expect(response.body).to include full_title("Sign up")
     end
@@ -28,6 +28,11 @@ RSpec.describe "Users", type: :request do
         post users_path, params: { user: valid_user_params }
         created_user = User.last
         expect(response).to redirect_to created_user
+      end
+
+      it "is logged in" do
+        post users_path, params: { user: valid_user_params }
+        expect(is_logged_in?).to be_truthy
       end
     end
 

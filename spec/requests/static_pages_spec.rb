@@ -9,7 +9,7 @@ RSpec.describe "StaticPages", type: :request do
       expect(response).to have_http_status :ok
     end
 
-    it "have a correct title" do
+    it "has a correct title" do
       get root_path
       expect(response.body).to include "#{base_title}"
     end
@@ -20,7 +20,7 @@ RSpec.describe "StaticPages", type: :request do
       get help_path
       expect(response).to have_http_status :ok
     end
-    it "have a correct title" do
+    it "has a correct title" do
       get help_path
       expect(response.body).to include "Help | #{base_title}"
     end
@@ -31,7 +31,7 @@ RSpec.describe "StaticPages", type: :request do
       get about_path
       expect(response).to have_http_status :ok
     end
-    it "have a correct title" do
+    it "has a correct title" do
       get about_path
       expect(response.body).to include "About | #{base_title}"
     end
@@ -42,7 +42,7 @@ RSpec.describe "StaticPages", type: :request do
       get contact_path
       expect(response).to have_http_status :ok
     end
-    it "have a correct title" do
+    it "has a correct title" do
       get contact_path
       expect(response.body).to include "Contact | #{base_title}"
     end
