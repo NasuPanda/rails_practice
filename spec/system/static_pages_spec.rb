@@ -7,7 +7,7 @@ RSpec.describe "StaticPages", type: :system do
   end
 
   describe "root" do
-    it "have two links to root path and one link to help, about, contact" do
+    it "has two links to root path and one link to help, about, contact" do
       visit root_path
       links_to_root = page.find_all("a[href=\"#{root_path}\"]")
 
