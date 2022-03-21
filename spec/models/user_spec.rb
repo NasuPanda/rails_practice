@@ -10,6 +10,12 @@ RSpec.describe User, type: :model do
     expect(mixed_case_email.downcase).to eq user.reload.email
   end
 
+  describe "#authenticated?" do
+    it "returns false if digest is nil" do
+      expect(user.authenticated?("")).to_not be_truthy
+    end
+  end
+
   # 有効なユーザーのテスト
   context "with valid attributes" do
 

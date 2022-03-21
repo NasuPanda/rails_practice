@@ -38,4 +38,5 @@ RSpec.configure do |config|
 
   # 追記
   include ApplicationHelper
+  include SessionsHelper
 end

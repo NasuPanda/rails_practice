@@ -10,7 +10,7 @@ RSpec.describe "Sessions", type: :system do
 
     context "with valid information" do
 
-      it "doesn't havs a link to login and has a link to logout, user/id" do
+      it "doesn't have a link to login and has a link to logout, user/id" do
         visit login_path
         fill_in "Email", with: user.email
         fill_in "Password", with: user.password
