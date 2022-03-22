@@ -10,7 +10,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     context "sessions is nil" do
       it "returns right user" do
         expect(user).to eq current_user
-        expect(is_logged_in?).to be_truthy
+        expect(logged_in?).to be_truthy
       end
     end
 

@@ -16,6 +16,10 @@ module LoginSupport
                                             password: user.password } }
     end
 
+    def log_out
+      session[:user_id] = nil
+    end
+
     def is_logged_in?
       !session[:user_id].nil?
     end

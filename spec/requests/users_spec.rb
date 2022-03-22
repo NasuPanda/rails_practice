@@ -70,6 +70,18 @@ RSpec.describe "Users", type: :request do
         get edit_user_path(user)
         expect(response).to redirect_to login_path
       end
+
+      it "does friendly forwarding only the first time and redirects the subsequent logins to the default" do
+        # 未ログインでeditへアクセス
+        get edit_user_path(user)
+        # 1回目のログイン(フレンドリーフォワーディングされる)
+        log_in user
+        expect(response).to redirect_to edit_user_path(user)
+        # 2回目のログイン
+        log_out
+        log_in user
+        expect(response).to redirect_to user
+      end
     end
 
     context "as a wrong user" do
@@ -109,10 +121,6 @@ RSpec.describe "Users", type: :request do
           expect(user.email).to eq @another_user_params[:email]
         end
 
-        it "redirects to users/id" do
-          expect(response).to redirect_to user
-        end
-
         it "has a success flash" do
           expect(flash).to be_any
         end
@@ -143,28 +151,29 @@ RSpec.describe "Users", type: :request do
     end
 
     context "as a non logged in user" do
-        before do
-          @another_user_params = { name: "Another name",
-            email: "another@gmail.com",
-            password: "",
-            password_confirmation: "" }
+      before do
+        @another_user_params = { name: "Another name",
+          email: "another@gmail.com",
+          password: "",
+          password_confirmation: "" }
+      end
 
-          patch user_path(user), params: { user: @another_user_params }
-        end
+      it "can't edit" do
+        patch user_path(user), params: { user: @another_user_params }
+        user.reload
+        expect(user.name).to_not eq @another_user_params[:name]
+        expect(user.email).to_not eq @another_user_params[:email]
+      end
 
-        it "can't edit" do
-          user.reload
-          expect(user.name).to_not eq @another_user_params[:name]
-          expect(user.email).to_not eq @another_user_params[:email]
-        end
+      it "redirects to root" do
+        patch user_path(user), params: { user: @another_user_params }
+        expect(response).to redirect_to login_path
+      end
 
-        it "redirects to root" do
-          expect(response).to redirect_to login_path
-        end
-
-        it "has a error flash" do
-          expect(flash).to be_any
-        end
+      it "has a error flash" do
+        patch user_path(user), params: { user: @another_user_params }
+        expect(flash).to be_any
+      end
     end
 
     context "as a wrong user" do
