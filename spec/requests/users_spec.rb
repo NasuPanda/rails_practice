@@ -194,5 +194,20 @@ RSpec.describe "Users", type: :request do
     end
   end
 
+  describe "#index" do
+    let(:user) { FactoryBot.create(:user) }
+
+    context "as a logged in user" do
+      # 後で書く
+    end
+
+    context "as a non logged in user" do
+      it "redirects to login_path" do
+        get users_path
+        expect(response).to redirect_to login_path
+      end
+    end
+  end
+
 
 end
