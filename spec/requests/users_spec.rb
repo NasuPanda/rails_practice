@@ -51,7 +51,7 @@ RSpec.describe "Users", type: :request do
 
     context "as a logged in user" do
       before do
-        log_in_request(user)
+        log_in(user)
       end
 
       it "has a correct title" do
@@ -72,6 +72,18 @@ RSpec.describe "Users", type: :request do
       end
     end
 
+    context "as a wrong user" do
+      before do
+        wrong_user = FactoryBot.create(:another_user)
+        log_in wrong_user
+      end
+
+      it "redirects to root" do
+        get edit_user_path(user)
+        expect(response).to redirect_to root_url
+      end
+    end
+
   end
 
   describe "#update" do
@@ -79,7 +91,7 @@ RSpec.describe "Users", type: :request do
 
     context "as a logged in user" do
       before do
-        log_in_request(user)
+        log_in(user)
       end
 
       context "with valid information" do
@@ -153,6 +165,23 @@ RSpec.describe "Users", type: :request do
         it "has a error flash" do
           expect(flash).to be_any
         end
+    end
+
+    context "as a wrong user" do
+      before do
+        wrong_user = FactoryBot.create(:another_user)
+        another_user_params = { name: "Another name",
+          email: "another@gmail.com",
+          password: "",
+          password_confirmation: "" }
+
+        log_in wrong_user
+        patch user_path(user), params: { user: another_user_params }
+      end
+
+      it "redirects to root" do
+        expect(response).to redirect_to root_url
+      end
     end
   end
 
