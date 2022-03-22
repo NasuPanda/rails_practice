@@ -198,7 +198,28 @@ RSpec.describe "Users", type: :request do
     let(:user) { FactoryBot.create(:user) }
 
     context "as a logged in user" do
-      # 後で書く
+      before do
+        30.times do
+          FactoryBot.create(:many_users)
+        end
+        log_in user
+        get users_path
+      end
+
+      it "has a correct title" do
+        expect(response.body).to include full_title("All users")
+      end
+
+      it "has a pagination" do
+        pagination = '<div role="navigation" aria-label="Pagination" class="pagination">'
+        expect(response.body).to include pagination
+      end
+
+      it "has a link for each user" do
+        User.paginate(page: 1).each do |user|
+          expect(response.body).to include "<a href=\"#{user_path(user)}\">"
+        end
+      end
     end
 
     context "as a non logged in user" do

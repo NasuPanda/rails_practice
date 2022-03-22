@@ -20,4 +20,11 @@ FactoryBot.define do
     password_confirmtaion { "rack" }
   end
 
+  factory :many_users, class: User do
+    sequence(:name) { |n| "Example User #{n}" }
+    sequence(:email) { |n| "example-#{n}@gmail.com" }
+    password { 'password' }
+    password_confirmation { 'password' }
+  end
+
 end
