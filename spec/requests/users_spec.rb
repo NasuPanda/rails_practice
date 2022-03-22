@@ -20,7 +20,7 @@ RSpec.describe "Users", type: :request do
 
     context "with valid information" do
       it "creates a user" do
-        get signup_path
+        # get signup_path
         expect{
           post users_path, params: { user: valid_user_params }
         }.to change(User, :count).by 1
@@ -50,15 +50,36 @@ RSpec.describe "Users", type: :request do
 
   describe "#update" do
     let(:user) { FactoryBot.create(:user) }
-    let(:valid_user_params) { FactoryBot.attributes_for(:user) }
-    let(:invalid_user_params) { FactoryBot.attributes_for(:invalid_user) }
 
     context "with valid information" do
+      before do
+        @another_user_params = { name: "Another name",
+          email: "another@gmail.com",
+          password: "",
+          password_confirmation: "" }
+      end
+
+      it "edits a user" do
+        patch user_path(user), params: { user: @another_user_params }
+        user.reload
+        expect(user.name).to eq @another_user_params[:name]
+        expect(user.email).to eq @another_user_params[:email]
+      end
+
+      it "redirects to users/id" do
+        patch user_path(user), params: { user: @another_user_params }
+        expect(response).to redirect_to user
+      end
+
+      it "has a flash" do
+        patch user_path(user), params: { user: @another_user_params }
+        expect(flash).to be_any
+      end
     end
 
     context "with invalid information" do
+      let(:invalid_user_params) { FactoryBot.attributes_for(:invalid_user) }
       it "doesn't edit a user" do
-        # get edit_user_path(user)
         patch user_path(user), params: { user: invalid_user_params }
         user.reload
         expect(user.name).to_not eq invalid_user_params[:name]
@@ -68,9 +89,13 @@ RSpec.describe "Users", type: :request do
       end
 
       it "redirects to edit page" do
-        get edit_user_path(user)
         patch user_path(user), params: { user: invalid_user_params }
         expect(response.body).to include full_title("Edit user")
+      end
+
+      it "has correct error messages of 'The form contains 3 errors'" do
+        patch user_path(user), params: { user: invalid_user_params }
+        expect(response.body).to include "The form contains 3 errors"
       end
     end
   end

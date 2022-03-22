@@ -6,10 +6,18 @@ FactoryBot.define do
     password_confirmation { "securePassword" }
   end
 
+  factory :another_user ,class: User do
+    name { "Another User" }
+    email { "another@gmail.com" }
+    password { "securePassword" }
+    password_confirmation { "securePassword" }
+  end
+
   factory :invalid_user, class: User do
     name { "" }
     email { "address@invalid" }
     password { "short" }
     password_confirmtaion { "rack" }
   end
+
 end
