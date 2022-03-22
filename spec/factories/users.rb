@@ -4,9 +4,10 @@ FactoryBot.define do
     email { "example@email.com" }
     password { "securePassword" }
     password_confirmation { "securePassword" }
+    admin { true }
   end
 
-  factory :another_user ,class: User do
+  factory :other_user ,class: User do
     name { "Another User" }
     email { "another@gmail.com" }
     password { "securePassword" }
