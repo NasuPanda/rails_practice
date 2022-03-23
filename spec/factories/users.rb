@@ -1,10 +1,13 @@
 FactoryBot.define do
+  # 管理者
   factory :user do
     name { "Example User" }
     email { "example@email.com" }
     password { "securePassword" }
     password_confirmation { "securePassword" }
     admin { true }
+    activated { true }
+    activated_at { Time.zone.now }
   end
 
   factory :other_user ,class: User do
@@ -12,6 +15,8 @@ FactoryBot.define do
     email { "another@gmail.com" }
     password { "securePassword" }
     password_confirmation { "securePassword" }
+    activated { true }
+    activated_at { Time.zone.now }
   end
 
   factory :invalid_user, class: User do
@@ -19,6 +24,8 @@ FactoryBot.define do
     email { "address@invalid" }
     password { "short" }
     password_confirmtaion { "rack" }
+    activated { true }
+    activated_at { Time.zone.now }
   end
 
   factory :many_users, class: User do
@@ -26,6 +33,8 @@ FactoryBot.define do
     sequence(:email) { |n| "example-#{n}@gmail.com" }
     password { 'password' }
     password_confirmation { 'password' }
+    activated { true }
+    activated_at { Time.zone.now }
   end
 
 end
