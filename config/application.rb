@@ -10,6 +10,7 @@ module RailsPractice
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
+		config.action_mailer.default_url_options = { host: "localhost:3000", protocol: 'http' }
 
     config.generators do |g|
 			g.test_framework :rspec,

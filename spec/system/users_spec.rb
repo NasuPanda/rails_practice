@@ -7,7 +7,7 @@ RSpec.describe "Users", type: :system do
 
   describe "#create" do
     context "with valid information" do
-      it "has a success message" do
+      it "has a info message" do
         valid_user_params = FactoryBot.attributes_for(:user)
 
         visit signup_path
@@ -17,7 +17,7 @@ RSpec.describe "Users", type: :system do
         fill_in "Password confirmation", with: valid_user_params[:password_confirmation]
         click_button "Create my account"
 
-        expect(page).to have_selector "div.alert-success"
+        expect(page).to have_selector "div.alert-info"
       end
     end
 

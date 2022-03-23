@@ -43,16 +43,16 @@ RSpec.describe "Users", type: :request do
         }.to change(User, :count).by 1
       end
 
-      it "redirects to users/id" do
-        post users_path, params: { user: valid_user_params }
-        created_user = User.last
-        expect(response).to redirect_to created_user
-      end
+      # it "redirects to users/id" do
+      #   post users_path, params: { user: valid_user_params }
+      #   created_user = User.last
+      #   expect(response).to redirect_to created_user
+      # end
 
-      it "is logged in when successfully created" do
-        post users_path, params: { user: valid_user_params }
-        expect(is_logged_in?).to be_truthy
-      end
+      # it "is logged in when successfully created" do
+      #   post users_path, params: { user: valid_user_params }
+      #   expect(is_logged_in?).to be_truthy
+      # end
     end
 
     context "with invalid information" do
