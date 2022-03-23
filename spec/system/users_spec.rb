@@ -35,4 +35,27 @@ RSpec.describe "Users", type: :system do
       end
     end
   end
+
+  describe '#index' do
+    let!(:admin) { FactoryBot.create(:user) }
+    let!(:non_admin_user) { FactoryBot.create(:other_user) }
+
+    context "as a admin user" do
+      it "has a link to delete" do
+        log_in admin
+        visit users_path
+
+        expect(page).to have_link "delete"
+      end
+    end
+
+    context "as a non-admin user" do
+      it "doesn't have a link to delete" do
+        log_in non_admin_user
+        visit users_path
+
+        expect(page).to_not have_link "delete"
+      end
+    end
+  end
 end

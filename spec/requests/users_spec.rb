@@ -248,22 +248,53 @@ RSpec.describe "Users", type: :request do
     end
   end
 
-  describe "#destroy" do
-    let(:admin_user) { FactoryBot.create(:user) }
-    let(:other_user) { FactoryBot.create(:other_user) }
+  describe "DELETE /users/id" do
+    # userはadmin
+    let!(:user) { FactoryBot.create(:user) }
+    let!(:other_user) { FactoryBot.create(:other_user) }
 
-    context "as an admin user" do
+    context "as a non-logged in user" do
+      it "redirects to login_path" do
+        delete user_path(user)
+        expect(response).to redirect_to root_url
+      end
+
+      it "can't delete" do
+        expect {
+          delete user_path(user)
+        }.to_not change(User, :count)
+      end
     end
 
-    context "as a non-admin user" do
+    context "as a logged in user" do
+      context "as a non-admin user" do
+        before do
+          log_in other_user
+        end
 
-      context "as a logged in user" do
+        it "redirects to root" do
+          delete user_path(user)
+          expect(response).to redirect_to root_url
+        end
+
+        it "can't delete a user" do
+          expect {
+            delete user_path(user)
+          }.to_not change(User, :count)
+        end
       end
 
-      context "as a non-logged in user" do
-      end
+      context "as an admin user" do
+        before do
+          log_in user
+        end
 
+        it "can delete a user" do
+          expect{
+            delete user_path(other_user)
+          }.to change(User, :count).by -1
+        end
+      end
     end
   end
-
 end
