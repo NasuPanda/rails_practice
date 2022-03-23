@@ -12,7 +12,7 @@ RSpec.describe User, type: :model do
 
   describe "#authenticated?" do
     it "returns false if digest is nil" do
-      expect(user.authenticated?("")).to_not be_truthy
+      expect(user.authenticated?(:remember, "")).to_not be_truthy
     end
   end
 
