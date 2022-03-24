@@ -1,10 +1,11 @@
 require "rails_helper"
 
 RSpec.describe UserMailer, type: :mailer do
+  let(:user) { FactoryBot.create(:user)}
+  let(:from_address) { "noreply@example.com" }
+
   describe "account_activation" do
-    let(:user) { FactoryBot.create(:user)}
     let(:mail) { UserMailer.account_activation(user) }
-    let(:from_address) { "noreply@example.com" }
 
     describe "header" do
       it "sends to the user's email address" do
@@ -39,9 +40,7 @@ RSpec.describe UserMailer, type: :mailer do
   end
 
   describe "password_reset" do
-    let(:user) { FactoryBot.create(:user)}
     let(:mail) { UserMailer.password_reset(user) }
-    let(:from_address) { "noreply@example.com" }
     before do
       user.reset_token = User.new_token
     end
