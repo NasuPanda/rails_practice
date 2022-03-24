@@ -5,7 +5,7 @@ RSpec.describe "Users", type: :system do
     driven_by(:rack_test)
   end
 
-  describe "#create" do
+  describe "POST /users" do
     context "with valid information" do
       it "has a info message" do
         valid_user_params = FactoryBot.attributes_for(:user)
@@ -36,7 +36,7 @@ RSpec.describe "Users", type: :system do
     end
   end
 
-  describe '#index' do
+  describe "GET /users" do
     let!(:admin) { FactoryBot.create(:user) }
     let!(:non_admin_user) { FactoryBot.create(:other_user) }
 
@@ -55,6 +55,13 @@ RSpec.describe "Users", type: :system do
         visit users_path
 
         expect(page).to_not have_link "delete"
+      end
+
+      it "doesn't display inactivated user" do
+        inactivated_user = FactoryBot.create(:inactivated_user)
+        log_in non_admin_user
+        get users_path
+        expect(response.body).to_not include inactivated_user.name
       end
     end
   end

@@ -23,7 +23,7 @@ FactoryBot.define do
     name { "" }
     email { "address@invalid" }
     password { "short" }
-    password_confirmtaion { "rack" }
+    password_confirmation { "rack" }
     activated { true }
     activated_at { Time.zone.now }
   end
@@ -35,6 +35,14 @@ FactoryBot.define do
     password_confirmation { 'password' }
     activated { true }
     activated_at { Time.zone.now }
+  end
+
+  factory :inactivated_user, class: User do
+    name { "inactive" }
+    email { "inactivated@email.com" }
+    password { "password" }
+    password_confirmation { "password" }
+    activated { false }
   end
 
 end

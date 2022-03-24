@@ -1,25 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Users", type: :request do
-  describe "PATCH /users" do
-    it "can't change admin attribute via web" do
-      # 最初のユーザーはadminなので他のユーザーを使用
-      user = FactoryBot.create(:other_user)
-      expect(user).to_not be_admin
-
-      log_in user
-      patch user_path(user), params: { user: {
-          password: "password",
-          password_confirmation: "password",
-          admin: true
-        }
-      }
-      user.reload
-      expect(user).to_not be_admin
-    end
-  end
-
-  describe "#new" do
+  describe "GET /users/new" do
     it "responds successfully" do
       get signup_path
       expect(response).to have_http_status :ok
@@ -31,28 +13,50 @@ RSpec.describe "Users", type: :request do
     end
   end
 
-  describe "#create" do
+  describe "GET /users/id" do
+    let(:user) { FactoryBot.create(:user) }
+    let(:inactivated_user) { FactoryBot.create(:inactivated_user) }
+
+    context "visit inactivated user" do
+      it "redirects to root" do
+        log_in user
+        get user_path(inactivated_user)
+        expect(response).to redirect_to root_url
+      end
+    end
+  end
+
+  describe "POST /users" do
     let(:user) { FactoryBot.create(:user) }
     let(:valid_user_params) { FactoryBot.attributes_for(:user) }
     let(:invalid_user_params) { FactoryBot.attributes_for(:invalid_user) }
 
     context "with valid information" do
+      before do
+        ActionMailer::Base.deliveries.clear
+      end
+
       it "creates a user" do
         expect{
           post users_path, params: { user: valid_user_params }
         }.to change(User, :count).by 1
       end
 
-      # it "redirects to users/id" do
-      #   post users_path, params: { user: valid_user_params }
-      #   created_user = User.last
-      #   expect(response).to redirect_to created_user
-      # end
+      it "redirects to root" do
+        post users_path, params: { user: valid_user_params }
+        created_user = User.last
+        expect(response).to redirect_to root_url
+      end
 
-      # it "is logged in when successfully created" do
-      #   post users_path, params: { user: valid_user_params }
-      #   expect(is_logged_in?).to be_truthy
-      # end
+      it "exists 1 email" do
+        post users_path, params: { user: valid_user_params }
+        expect(ActionMailer::Base.deliveries.size).to eq 1
+      end
+
+      it "hasn't yet been activated" do
+        post users_path, params: { user: valid_user_params }
+        expect(User.last).to_not be_activated
+      end
     end
 
     context "with invalid information" do
@@ -64,7 +68,7 @@ RSpec.describe "Users", type: :request do
     end
   end
 
-  describe "#edit" do
+  describe "GET users/edit/id" do
     let(:user) { FactoryBot.create(:user) }
 
     context "as a logged in user" do
@@ -116,8 +120,24 @@ RSpec.describe "Users", type: :request do
 
   end
 
-  describe "#update" do
+  describe "PATCH /users" do
     let(:user) { FactoryBot.create(:user) }
+
+    it "can't change admin attribute via web" do
+      # 最初のユーザーはadminなので他のユーザーを使用
+      user = FactoryBot.create(:other_user)
+      expect(user).to_not be_admin
+
+      log_in user
+      patch user_path(user), params: { user: {
+          password: "password",
+          password_confirmation: "password",
+          admin: true
+        }
+      }
+      user.reload
+      expect(user).to_not be_admin
+    end
 
     context "as a logged in user" do
       before do
@@ -212,7 +232,7 @@ RSpec.describe "Users", type: :request do
     end
   end
 
-  describe "#index" do
+  describe "GET /users" do
     let(:user) { FactoryBot.create(:user) }
 
     context "as a logged in user" do
@@ -220,20 +240,24 @@ RSpec.describe "Users", type: :request do
         30.times do
           FactoryBot.create(:many_users)
         end
-        log_in user
-        get users_path
       end
 
       it "has a correct title" do
+        log_in user
+        get users_path
         expect(response.body).to include full_title("All users")
       end
 
       it "has a pagination" do
+        log_in user
+        get users_path
         pagination = '<div role="navigation" aria-label="Pagination" class="pagination">'
         expect(response.body).to include pagination
       end
 
       it "has a link for each user" do
+        log_in user
+        get users_path
         User.paginate(page: 1).each do |user|
           expect(response.body).to include "<a href=\"#{user_path(user)}\">"
         end
