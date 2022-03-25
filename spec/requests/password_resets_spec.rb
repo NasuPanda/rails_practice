@@ -63,7 +63,7 @@ RSpec.describe "PasswordResets", type: :request do
 
     context "with valid attributes" do
       it "accesses successfully" do
-        get edit_password_reset_path(@user.reset_token, email: user.email)
+        get edit_password_reset_path(@user.reset_token, email: @user.email)
         expect(response.body).to include full_title("Reset password")
       end
 
@@ -71,7 +71,7 @@ RSpec.describe "PasswordResets", type: :request do
         # メールアドレスを保持するためのフォーム
         form = "<input type=\"hidden\" name=\"email\" id=\"email\" value=\"#{@user.email}\" />"
 
-        get edit_password_reset_path(@user.reset_token, email: user.email)
+        get edit_password_reset_path(@user.reset_token, email: @user.email)
         expect(response.body).to include form
       end
     end
@@ -83,7 +83,7 @@ RSpec.describe "PasswordResets", type: :request do
       end
 
       it "redirects to root with an invalid token" do
-        get edit_password_reset_path("Invalid token", email: user.email)
+        get edit_password_reset_path("Invalid token", email: @user.email)
         expect(response).to redirect_to root_url
       end
     end
@@ -91,8 +91,18 @@ RSpec.describe "PasswordResets", type: :request do
     context "as an inactivated user" do
       it "redirects to root" do
         @user.toggle!(:activated)
-        get edit_password_reset_path(@user.reset_token, email: user.email)
+        get edit_password_reset_path(@user.reset_token, email: @user.email)
         expect(response).to redirect_to root_url
+      end
+    end
+
+    context "with expired token" do
+      before do
+        @user.update_attribute(:reset_sent_at, 3.hours.ago)
+      end
+      it "redirects to new_password_reset_path" do
+        get edit_password_reset_path(@user.reset_token, email: @user.email)
+        expect(response).to redirect_to new_password_reset_path
       end
     end
   end
@@ -137,6 +147,15 @@ RSpec.describe "PasswordResets", type: :request do
         @user.reload
         expect(@user.authenticated?(:password, old_password)).to_not be_truthy
       end
+
+      it "sets reset_digest to nil" do
+        patch password_reset_path(@user.reset_token), params: {
+          email: @user.email,
+          user: { password: "newPassword", password_confirmation: "newPassword" }
+        }
+        @user.reload
+        expect(@user.reset_digest).to be_nil
+      end
     end
 
     context "with invalid attributes" do
@@ -154,6 +173,29 @@ RSpec.describe "PasswordResets", type: :request do
           user: { password: "", password_confirmation: "" }
         }
         expect(response.body).to include '<div id="error_explanation">'
+      end
+    end
+
+    context "with expired token" do
+      before do
+        @user.update_attribute(:reset_sent_at, 3.hours.ago)
+      end
+
+      it "has a correct error message of expired" do
+        patch password_reset_path(@user.reset_token), params: {
+          email: @user.email,
+          user: { password: "newPassword", password_confirmation: "newPassword" }
+        }
+        follow_redirect!
+        expect(response.body).to include "Password reset has expired"
+      end
+
+      it "redirects to new_password_reset_path" do
+        patch password_reset_path(@user.reset_token), params: {
+          email: @user.email,
+          user: { password: "newPassword", password_confirmation: "newPassword" }
+        }
+        expect(response).to redirect_to new_password_reset_path
       end
     end
   end
