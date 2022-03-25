@@ -11,7 +11,7 @@ RSpec.describe "StaticPages", type: :request do
 
     it "has a correct title" do
       get root_path
-      expect(response.body).to include "#{base_title}"
+      expect(response.body).to include full_title
     end
   end
 
@@ -22,7 +22,7 @@ RSpec.describe "StaticPages", type: :request do
     end
     it "has a correct title" do
       get help_path
-      expect(response.body).to include "Help | #{base_title}"
+      expect(response.body).to include full_title("Help")
     end
   end
 
@@ -33,7 +33,7 @@ RSpec.describe "StaticPages", type: :request do
     end
     it "has a correct title" do
       get about_path
-      expect(response.body).to include "About | #{base_title}"
+      expect(response.body).to include full_title("About")
     end
   end
 
@@ -44,7 +44,7 @@ RSpec.describe "StaticPages", type: :request do
     end
     it "has a correct title" do
       get contact_path
-      expect(response.body).to include "Contact | #{base_title}"
+      expect(response.body).to include full_title("Contact")
     end
   end
 
