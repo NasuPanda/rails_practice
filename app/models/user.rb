@@ -55,13 +55,17 @@ class User < ApplicationRecord
   # パスワードリセット用のダイジェストを生成
   def create_reset_digest
     self.reset_token = User.new_token
-    update_attribute(:reset_digest, User.digest(reset_token))
-    update_attribute(:reset_send_at, Time.zone.now)
+    update_columns(reset_digest: User.digest(reset_token), reset_sent_at: Time.zone.now)
   end
 
   #パスワードリセット用のメースを送信
   def send_password_reset_email
     UserMailer.password_reset(self).deliver_now
+  end
+
+  # パスワードの有効期限をチェックする
+  def password_reset_expired?
+    reset_sent_at < 2.hours.ago
   end
 
   private
