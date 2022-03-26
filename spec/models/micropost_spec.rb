@@ -5,7 +5,7 @@ RSpec.describe Micropost, type: :model do
   let(:micropost) { FactoryBot.create(:micropost) }
 
   it "is sorted by newest to oldest" do
-    create_posts_different_posting_time
+    FactoryBot.send(:create_posts_different_posting_time)
     expect(FactoryBot.create(:micropost, :most_recent)).to eq Micropost.first
   end
 
