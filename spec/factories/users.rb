@@ -1,5 +1,4 @@
 FactoryBot.define do
-  # 管理者
   factory :user do
     sequence(:name) { |n| "Example User #{n}" }
     sequence(:email) { |n| "example-#{n}@gmail.com" }
@@ -10,11 +9,6 @@ FactoryBot.define do
 
     trait :admin do
       admin { true }
-    end
-
-    trait :other do
-      name { "other User" }
-      email { "other@gmail.com" }
     end
 
     trait :invalid do
