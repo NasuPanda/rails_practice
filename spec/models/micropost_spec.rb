@@ -18,8 +18,6 @@ RSpec.describe Micropost, type: :model do
     end
   end
 
-
-
   describe "validation" do
     context "with valid attributes" do
       it "is valid" do
