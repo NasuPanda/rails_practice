@@ -19,11 +19,16 @@ FactoryBot.define do
       created_at { 1.week.ago }
     end
 
+    trait :last_month do
+      created_at { 1.month.ago }
+    end
+
   end
 end
 
-def posts_different_posting_time
+def create_posts_different_posting_time
   FactoryBot.create(:micropost, :some_time_ago)
   FactoryBot.create(:micropost, :yesterday)
   FactoryBot.create(:micropost, :last_week)
+  FactoryBot.create(:micropost, :last_month)
 end

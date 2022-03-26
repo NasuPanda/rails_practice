@@ -5,9 +5,8 @@ RSpec.describe Micropost, type: :model do
   let(:micropost) { FactoryBot.create(:micropost) }
 
   it "is sorted by newest to oldest" do
-    FactoryBot.send(:posts_different_posting_time)
-    most_recent = FactoryBot.create(:micropost, :most_recent)
-    expect(most_recent).to eq Micropost.first
+    create_posts_different_posting_time
+    expect(FactoryBot.create(:micropost, :most_recent)).to eq Micropost.first
   end
 
   describe "validation" do
