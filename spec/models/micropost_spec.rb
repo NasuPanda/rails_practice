@@ -9,6 +9,17 @@ RSpec.describe Micropost, type: :model do
     expect(FactoryBot.create(:micropost, :most_recent)).to eq Micropost.first
   end
 
+  describe "association" do
+    it "destroyed when the associated user is destroyed" do
+      user = micropost.user
+      expect {
+        user.destroy
+      }.to change(Micropost, :count).by -1
+    end
+  end
+
+
+
   describe "validation" do
     context "with valid attributes" do
       it "is valid" do
