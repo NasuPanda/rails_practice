@@ -24,7 +24,28 @@ RSpec.describe "Microposts", type: :request do
     let!(:micropost) { FactoryBot.create(:micropost) }
 
     context "as a logged in user" do
+      context "as a wrong user" do
+        before do
+          wrong_user = FactoryBot.create(:user)
+          log_in(wrong_user)
+        end
+
+        it "redirects to root_url" do
+          delete micropost_path(micropost)
+          expect(response).to redirect_to root_url
+        end
+
+        it "does't delete a post" do
+          expect {
+            delete micropost_path(micropost)
+          }.to_not change(Micropost, :count)
+        end
+      end
+      context "as a correct user" do
+        # 後で書く
+      end
     end
+
 
     context "as a non-logged in user" do
       it "redirects to login_path" do

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :micropost do
-    content { "Test post" }
+    sequence(:content) { |n| "Test post #{n}" }
     association :user
 
     trait :most_recent do
