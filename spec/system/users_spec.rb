@@ -7,9 +7,8 @@ RSpec.describe "Users", type: :system do
 
   describe "POST /users" do
     context "with valid information" do
+      let(:valid_user_params) { FactoryBot.attributes_for(:user) }
       it "has a info message" do
-        valid_user_params = FactoryBot.attributes_for(:user)
-
         visit signup_path
         fill_in "Name", with: valid_user_params[:name]
         fill_in "Email", with: valid_user_params[:email]
@@ -37,29 +36,28 @@ RSpec.describe "Users", type: :system do
   end
 
   describe "GET /users" do
-    let!(:admin) { FactoryBot.create(:user) }
-    let!(:non_admin_user) { FactoryBot.create(:other_user) }
+    let(:admin) { FactoryBot.create(:user, :admin) }
+    let!(:user) { FactoryBot.create(:user) }
 
     context "as a admin user" do
       it "has a link to delete" do
         log_in admin
         visit users_path
-
         expect(page).to have_link "delete"
       end
     end
 
     context "as a non-admin user" do
       it "doesn't have a link to delete" do
-        log_in non_admin_user
+        log_in user
         visit users_path
 
         expect(page).to_not have_link "delete"
       end
 
       it "doesn't display inactivated user" do
-        inactivated_user = FactoryBot.create(:inactivated_user)
-        log_in non_admin_user
+        inactivated_user = FactoryBot.create(:user, :inactivated)
+        log_in user
         get users_path
         expect(response.body).to_not include inactivated_user.name
       end

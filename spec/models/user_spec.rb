@@ -3,17 +3,17 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
   let (:user) { FactoryBot.build(:user) }
 
+  describe "#authenticated?" do
+    it "returns false if digest is nil" do
+      expect(user.authenticated?(:remember, "")).to_not be_truthy
+    end
+  end
+
   it "saves an email as lower case" do
     mixed_case_email = "Foo@ExAmPle.coM"
     user.email = mixed_case_email
     user.save
     expect(mixed_case_email.downcase).to eq user.reload.email
-  end
-
-  describe "#authenticated?" do
-    it "returns false if digest is nil" do
-      expect(user.authenticated?(:remember, "")).to_not be_truthy
-    end
   end
 
   # 有効なユーザーのテスト
@@ -31,7 +31,6 @@ RSpec.describe User, type: :model do
         expect(user).to be_valid
       end
     end
-
   end
 
   # 無効なユーザーのテスト

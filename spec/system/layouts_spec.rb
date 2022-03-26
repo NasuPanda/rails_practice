@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "Layouts", type: :system do
+  let(:user) { FactoryBot.create(:user) }
   before do
     driven_by(:rack_test)
   end
-  let(:user) { FactoryBot.create(:user) }
 
   describe "header" do
     context "as a logged in user" do

@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "Users", type: :request do
+  let(:user) { FactoryBot.create(:user) }
+
   describe "GET /users/new" do
     it "responds successfully" do
       get signup_path
@@ -14,8 +16,7 @@ RSpec.describe "Users", type: :request do
   end
 
   describe "GET /users/id" do
-    let(:user) { FactoryBot.create(:user) }
-    let(:inactivated_user) { FactoryBot.create(:inactivated_user) }
+    let(:inactivated_user) { FactoryBot.create(:user, :inactivated) }
 
     context "visit inactivated user" do
       it "redirects to root" do
@@ -27,9 +28,8 @@ RSpec.describe "Users", type: :request do
   end
 
   describe "POST /users" do
-    let(:user) { FactoryBot.create(:user) }
     let(:valid_user_params) { FactoryBot.attributes_for(:user) }
-    let(:invalid_user_params) { FactoryBot.attributes_for(:invalid_user) }
+    let(:invalid_user_params) { FactoryBot.attributes_for(:user, :invalid) }
 
     context "with valid information" do
       before do
@@ -69,8 +69,6 @@ RSpec.describe "Users", type: :request do
   end
 
   describe "GET users/edit/id" do
-    let(:user) { FactoryBot.create(:user) }
-
     context "as a logged in user" do
       before do
         log_in(user)
@@ -108,7 +106,7 @@ RSpec.describe "Users", type: :request do
 
     context "as a wrong user" do
       before do
-        wrong_user = FactoryBot.create(:other_user)
+        wrong_user = FactoryBot.create(:user)
         log_in wrong_user
       end
 
@@ -121,11 +119,7 @@ RSpec.describe "Users", type: :request do
   end
 
   describe "PATCH /users" do
-    let(:user) { FactoryBot.create(:user) }
-
     it "can't change admin attribute via web" do
-      # 最初のユーザーはadminなので他のユーザーを使用
-      user = FactoryBot.create(:other_user)
       expect(user).to_not be_admin
 
       log_in user
@@ -146,17 +140,19 @@ RSpec.describe "Users", type: :request do
 
       context "with valid information" do
         before do
-          @other_user_params = { name: "Another name",
+          @new_params = {
+            name: "Another name",
             email: "another@gmail.com",
             password: "",
-            password_confirmation: "" }
-          patch user_path(user), params: { user: @other_user_params }
+            password_confirmation: ""
+          }
+          patch user_path(user), params: { user: @new_params }
         end
 
         it "edits a user" do
           user.reload
-          expect(user.name).to eq @other_user_params[:name]
-          expect(user.email).to eq @other_user_params[:email]
+          expect(user.name).to eq @new_params[:name]
+          expect(user.email).to eq @new_params[:email]
         end
 
         it "has a success flash" do
@@ -166,7 +162,7 @@ RSpec.describe "Users", type: :request do
 
       context "with invalid information" do
         before do
-          @invalid_user_params = FactoryBot.attributes_for(:invalid_user)
+          @invalid_user_params = FactoryBot.attributes_for(:user, :invalid)
           patch user_path(user), params: { user: @invalid_user_params }
         end
 
@@ -190,40 +186,40 @@ RSpec.describe "Users", type: :request do
 
     context "as a non-logged in user" do
       before do
-        @other_user_params = { name: "Another name",
+        @new_params = { name: "Another name",
           email: "another@gmail.com",
           password: "",
           password_confirmation: "" }
       end
 
       it "can't edit" do
-        patch user_path(user), params: { user: @other_user_params }
+        patch user_path(user), params: { user: @new_params }
         user.reload
-        expect(user.name).to_not eq @other_user_params[:name]
-        expect(user.email).to_not eq @other_user_params[:email]
+        expect(user.name).to_not eq @new_params[:name]
+        expect(user.email).to_not eq @new_params[:email]
       end
 
       it "redirects to root" do
-        patch user_path(user), params: { user: @other_user_params }
+        patch user_path(user), params: { user: @new_params }
         expect(response).to redirect_to login_path
       end
 
       it "has a error flash" do
-        patch user_path(user), params: { user: @other_user_params }
+        patch user_path(user), params: { user: @new_params }
         expect(flash).to be_any
       end
     end
 
     context "as a wrong user" do
       before do
-        wrong_user = FactoryBot.create(:other_user)
-        other_user_params = { name: "Another name",
+        wrong_user = FactoryBot.create(:user)
+        new_params = { name: "Another name",
           email: "another@gmail.com",
           password: "",
           password_confirmation: "" }
 
         log_in wrong_user
-        patch user_path(user), params: { user: other_user_params }
+        patch user_path(user), params: { user: new_params }
       end
 
       it "redirects to root" do
@@ -233,12 +229,10 @@ RSpec.describe "Users", type: :request do
   end
 
   describe "GET /users" do
-    let(:user) { FactoryBot.create(:user) }
-
     context "as a logged in user" do
       before do
         30.times do
-          FactoryBot.create(:many_users)
+          FactoryBot.create(:user)
         end
       end
 
@@ -273,19 +267,18 @@ RSpec.describe "Users", type: :request do
   end
 
   describe "DELETE /users/id" do
-    # userはadmin
-    let!(:user) { FactoryBot.create(:user) }
-    let!(:other_user) { FactoryBot.create(:other_user) }
+    let!(:admin) { FactoryBot.create(:user, :admin) }
+    let!(:other_user) { FactoryBot.create(:user) }
 
     context "as a non-logged in user" do
       it "redirects to login_path" do
-        delete user_path(user)
+        delete user_path(other_user)
         expect(response).to redirect_to root_url
       end
 
       it "can't delete" do
         expect {
-          delete user_path(user)
+          delete user_path(other_user)
         }.to_not change(User, :count)
       end
     end
@@ -293,24 +286,24 @@ RSpec.describe "Users", type: :request do
     context "as a logged in user" do
       context "as a non-admin user" do
         before do
-          log_in other_user
+          log_in user
         end
 
         it "redirects to root" do
-          delete user_path(user)
+          delete user_path(other_user)
           expect(response).to redirect_to root_url
         end
 
         it "can't delete a user" do
           expect {
-            delete user_path(user)
+            delete user_path(other_user)
           }.to_not change(User, :count)
         end
       end
 
       context "as an admin user" do
         before do
-          log_in user
+          log_in admin
         end
 
         it "can delete a user" do
@@ -321,4 +314,5 @@ RSpec.describe "Users", type: :request do
       end
     end
   end
+
 end

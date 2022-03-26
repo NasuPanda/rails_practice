@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "Sessions", type: :request do
+  let(:user) { FactoryBot.create(:user) }
+
   describe "#new" do
     it "responds successfully" do
       get login_path
@@ -9,7 +11,6 @@ RSpec.describe "Sessions", type: :request do
   end
 
   describe "#destroy" do
-    let(:user) { FactoryBot.create(:user) }
     it "can log out" do
       # ログイン
       get login_path
@@ -37,8 +38,6 @@ RSpec.describe "Sessions", type: :request do
   end
 
   describe "remember me" do
-    let(:user) { FactoryBot.create(:user) }
-
     context "login with remember" do
       it "stores the remember token in cookies" do
         post login_path, params: { session: { email: user.email,
