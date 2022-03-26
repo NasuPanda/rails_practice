@@ -13,7 +13,7 @@ RSpec.describe "Users", type: :system do
         fill_in "Name", with: valid_user_params[:name]
         fill_in "Email", with: valid_user_params[:email]
         fill_in "Password", with: valid_user_params[:password]
-        fill_in "Password confirmation", with: valid_user_params[:password_confirmation]
+        fill_in "Confirmation", with: valid_user_params[:password_confirmation]
         click_button "Create my account"
 
         expect(page).to have_selector "div.alert-info"
@@ -26,7 +26,7 @@ RSpec.describe "Users", type: :system do
         fill_in "Name", with: ""
         fill_in "Email", with: "address@invalid"
         fill_in "Password", with: "short"
-        fill_in "Password confirmation", with: "rack"
+        fill_in "Confirmation", with: "rack"
         click_button "Create my account"
 
         expect(page).to have_selector "div#error_explanation"
