@@ -22,5 +22,9 @@ FactoryBot.define do
       activated { false }
       activated_at { nil }
     end
+
+    trait :with_posts do
+      after(:create) { |user| create_list(:micropost, 31, user: user) }
+    end
   end
 end

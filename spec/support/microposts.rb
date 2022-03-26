@@ -1,4 +1,4 @@
-module FactorySupport
+module PostSupport
   def create_posts_different_posting_time(test_object: :most_recent)
     FactoryBot.create(:micropost, test_object)
     FactoryBot.create(:micropost, :some_time_ago)
@@ -8,5 +8,5 @@ module FactorySupport
 end
 
 RSpec.configure do |config|
-  config.include FactorySupport
+  config.include PostSupport
 end

@@ -22,6 +22,5 @@ FactoryBot.define do
     trait :oldest do
       created_at { 1.month.ago }
     end
-
   end
 end
