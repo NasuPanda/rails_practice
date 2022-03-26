@@ -38,7 +38,7 @@ RSpec.describe "Sessions", type: :request do
   end
 
   describe "remember me" do
-    context "login with remember" do
+    context "login with the remember" do
       it "stores the remember token in cookies" do
         post login_path, params: { session: { email: user.email,
                                               password: user.password,
