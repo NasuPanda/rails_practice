@@ -71,6 +71,17 @@ RSpec.describe "Microposts", type: :system do
 
           expect(page).to have_content "Test Post"
         end
+
+        it "uploads an image" do
+          expect {
+            fill_in "micropost_content", with: "Test Post"
+            attach_file "micropost_image", "#{Rails.root}/spec/fixtures/kitten.jpg"
+            click_button "Post"
+          }.to change(Micropost, :count).by 1
+
+          attached_post = Micropost.first
+          expect(attached_post.image).to be_attached
+        end
       end
 
       context "with invalid attributes" do
