@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Micropost, type: :model do
   let(:user) { FactoryBot.create(:user) }
-  let(:micropost) { Micropost.new(content: "Test post", user_id: user.id) }
+  let(:micropost) { user.microposts.build(content: "Test post") }
 
   context "with valid attributes" do
     it "is valid" do
@@ -21,7 +21,7 @@ RSpec.describe Micropost, type: :model do
       expect(micropost).to_not be_valid
     end
 
-    it "is invalid without content" do
+    it "is invalid without a content" do
       micropost.content = ""
       expect(micropost).to_not be_valid
     end
