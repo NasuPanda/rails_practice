@@ -23,8 +23,14 @@ FactoryBot.define do
       activated_at { nil }
     end
 
+    # Micropostのテスト用
     trait :with_posts do
       after(:create) { |user| create_list(:micropost, 31, user: user) }
+    end
+
+    # feedのテスト用
+    trait :with_post do
+      after(:create) { |user| create(:micropost, user: user) }
     end
 
     trait :with_relationships do

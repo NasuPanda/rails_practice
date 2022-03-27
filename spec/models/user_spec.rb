@@ -9,35 +9,6 @@ RSpec.describe User, type: :model do
     expect(mixed_case_email.downcase).to eq user.reload.email
   end
 
-  describe "#authenticated?" do
-    let(:user) { FactoryBot.create(:user) }
-
-    it "returns false if digest is nil" do
-      expect(user.authenticated?(:remember, "")).to_not be_truthy
-    end
-  end
-
-  describe "#follow and #unfollow" do
-    let(:user) { FactoryBot.create(:user) }
-    let(:other_user) { FactoryBot.create(:user) }
-
-    it "can follow the other user" do
-      expect(user.following?(other_user)).to_not be_truthy
-
-      user.follow(other_user)
-
-      expect(user.following?(other_user)).to be_truthy
-      expect(other_user.followers.include?(user)).to be_truthy
-    end
-
-    it "can unfollow the other user" do
-      user.follow(other_user)
-      expect(user.following?(other_user)).to be_truthy
-      user.unfollow(other_user)
-      expect(user.following?(other_user)).to_not be_truthy
-    end
-  end
-
   describe "validation" do
     let(:user) { FactoryBot.build(:user) }
 
@@ -101,6 +72,62 @@ RSpec.describe User, type: :model do
       it "is invalid with a too short password" do
         user.password = user.password_confirmation = "abcde"
         expect(user).not_to be_valid
+      end
+    end
+  end
+
+  describe "#authenticated?" do
+    let(:user) { FactoryBot.create(:user) }
+
+    it "returns false if digest is nil" do
+      expect(user.authenticated?(:remember, "")).to_not be_truthy
+    end
+  end
+
+  describe "#follow and #unfollow" do
+    let(:user) { FactoryBot.create(:user) }
+    let(:other_user) { FactoryBot.create(:user) }
+
+    it "can follow the other user" do
+      expect(user.following?(other_user)).to_not be_truthy
+
+      user.follow(other_user)
+
+      expect(user.following?(other_user)).to be_truthy
+      expect(other_user.followers.include?(user)).to be_truthy
+    end
+
+    it "can unfollow the other user" do
+      user.follow(other_user)
+      expect(user.following?(other_user)).to be_truthy
+      user.unfollow(other_user)
+      expect(user.following?(other_user)).to_not be_truthy
+    end
+  end
+
+  describe "#feed" do
+    let(:user) { FactoryBot.create(:user, :with_posts) }
+    let(:user_following) { FactoryBot.create(:user, :with_posts) }
+    let(:user_unfollowed) { FactoryBot.create(:user, :with_posts) }
+    before do
+      user.follow(user_following)
+    end
+
+    it "displays user's own posts" do
+      user.microposts.each do |post_self|
+        expect(user.feed).to be_include
+      end
+    end
+
+    it "displays following user's posts" do
+      user_following.microposts.each do |post_following|
+        expect(user.feed).to be_include
+      end
+    end
+
+    it "doesn't display unfollowed user's posts" do
+      user_unfollowed.microposts.each do |post_unfollowed|
+        expect(user.feed).to_not be_include
       end
     end
   end
