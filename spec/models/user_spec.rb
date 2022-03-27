@@ -115,19 +115,19 @@ RSpec.describe User, type: :model do
 
     it "displays user's own posts" do
       user.microposts.each do |post_self|
-        expect(user.feed).to be_include
+        expect(user.feed).to be_include(post_self)
       end
     end
 
     it "displays following user's posts" do
       user_following.microposts.each do |post_following|
-        expect(user.feed).to be_include
+        expect(user.feed).to be_include(post_following)
       end
     end
 
     it "doesn't display unfollowed user's posts" do
       user_unfollowed.microposts.each do |post_unfollowed|
-        expect(user.feed).to_not be_include
+        expect(user.feed).to_not be_include(post_unfollowed)
       end
     end
   end
