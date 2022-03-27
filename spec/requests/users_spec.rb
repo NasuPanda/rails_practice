@@ -273,7 +273,7 @@ RSpec.describe "Users", type: :request do
     context "as a non-logged in user" do
       it "redirects to login_path" do
         delete user_path(other_user)
-        expect(response).to redirect_to root_url
+        expect(response).to redirect_to login_path
       end
 
       it "can't delete" do

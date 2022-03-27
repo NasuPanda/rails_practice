@@ -70,13 +70,75 @@ RSpec.describe "Users", type: :system do
   describe "GET /users/id" do
     describe "following and followers" do
       let(:user_with_relationships) { FactoryBot.create(:user, :with_relationships) }
-      let(:following) { user_with_relationships.following.count }
-      let(:followers) { user_with_relationships.followers.count }
+      let(:following_count) { user_with_relationships.following.count }
+      let(:followers_count) { user_with_relationships.followers.count }
 
       it "displays statistics for following and followers" do
         log_in user_with_relationships
-        expect(page).to have_content("#{following} following")
-        expect(page).to have_content("#{followers} followers")
+        expect(page).to have_content("#{following_count} following")
+        expect(page).to have_content("#{followers_count} followers")
+      end
+    end
+  end
+
+  describe "GET /users/id/following" do
+    let(:user) { FactoryBot.create(:user) }
+
+    context "as a logged in user" do
+      before do
+        @user_with_relationships = FactoryBot.create(:user, :with_relationships)
+        @following = @user_with_relationships.following
+        log_in @user_with_relationships
+      end
+
+      it "displays the correct number of following user" do
+        visit following_user_path(@user_with_relationships)
+
+        # ここが空の場合後のテストに影響が出るため
+        expect(@following).to_not be_empty
+
+        expect(page).to have_content("#{@following.count} following")
+        @following.paginate(page: 1).each do |follow|
+          expect(page).to have_link follow.name, href: user_path(follow)
+        end
+      end
+    end
+
+    context "as a non-logged in user" do
+      it "redirects to login_path" do
+        get following_user_path(user)
+        expect(response).to redirect_to login_path
+      end
+    end
+  end
+
+  describe "GET /users/id/followers" do
+    let(:user) { FactoryBot.create(:user) }
+
+    context "as a logged in user" do
+      before do
+        @user_with_relationships = FactoryBot.create(:user, :with_relationships)
+        @followers = @user_with_relationships.followers
+        log_in @user_with_relationships
+      end
+
+      it "displays the correct number of followers" do
+        visit followers_user_path(@user_with_relationships)
+
+        # ここが空の場合後のテストに影響が出るため
+        expect(@followers).to_not be_empty
+
+        expect(page).to have_content("#{@followers.count} followers")
+        @followers.paginate(page: 1).each do |follower|
+          expect(page).to have_link follower.name, href: user_path(follower)
+        end
+      end
+    end
+
+    context "as a non-logged in user" do
+      it "redirects to login_path" do
+        get followers_user_path(user)
+        expect(response).to redirect_to login_path
       end
     end
   end
