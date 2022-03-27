@@ -27,8 +27,6 @@ RSpec.describe User, type: :model do
       user.follow(other_user)
 
       expect(user.following?(other_user)).to be_truthy
-      puts other_user.inspect
-      puts other_user.followers.inspect
       expect(other_user.followers.include?(user)).to be_truthy
     end
 

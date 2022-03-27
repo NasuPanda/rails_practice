@@ -26,5 +26,16 @@ FactoryBot.define do
     trait :with_posts do
       after(:create) { |user| create_list(:micropost, 31, user: user) }
     end
+
+    trait :with_relationships do
+      after(:create) do |user|
+        30.times do
+          other_user = create(:user)
+          user.follow(other_user)
+          other_user.follow(user)
+        end
+      end
+    end
+
   end
 end

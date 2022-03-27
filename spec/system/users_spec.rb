@@ -36,30 +36,47 @@ RSpec.describe "Users", type: :system do
   end
 
   describe "GET /users" do
-    let(:admin) { FactoryBot.create(:user, :admin) }
     let!(:user) { FactoryBot.create(:user) }
 
-    context "as a admin user" do
-      it "has a link to delete" do
-        log_in admin
-        visit users_path
-        expect(page).to have_link "delete"
-      end
+    it "doesn't display inactivated user" do
+      inactivated_user = FactoryBot.create(:user, :inactivated)
+      log_in user
+      get users_path
+      expect(response.body).to_not include inactivated_user.name
     end
 
-    context "as a non-admin user" do
-      it "doesn't have a link to delete" do
-        log_in user
-        visit users_path
+    describe "delete link" do
+      context "as a admin user" do
+        let(:admin) { FactoryBot.create(:user, :admin) }
 
-        expect(page).to_not have_link "delete"
+        it "has a link to delete" do
+          log_in admin
+          visit users_path
+          expect(page).to have_link "delete"
+        end
       end
 
-      it "doesn't display inactivated user" do
-        inactivated_user = FactoryBot.create(:user, :inactivated)
-        log_in user
-        get users_path
-        expect(response.body).to_not include inactivated_user.name
+      context "as a non-admin user" do
+        it "doesn't have a link to delete" do
+          log_in user
+          visit users_path
+          expect(page).to_not have_link "delete"
+        end
+      end
+    end
+  end
+
+
+  describe "GET /users/id" do
+    describe "following and followers" do
+      let(:user_with_relationships) { FactoryBot.create(:user, :with_relationships) }
+      let(:following) { user_with_relationships.following.count }
+      let(:followers) { user_with_relationships.followers.count }
+
+      it "displays statistics for following and followers" do
+        log_in user_with_relationships
+        expect(page).to have_content("#{following} following")
+        expect(page).to have_content("#{followers} followers")
       end
     end
   end
