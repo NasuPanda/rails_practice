@@ -23,16 +23,19 @@ RSpec.describe User, type: :model do
 
     it "can follow the other user" do
       expect(user.following?(other_user)).to_not be_truthy
+
       user.follow(other_user)
+
       expect(user.following?(other_user)).to be_truthy
+      puts other_user.inspect
+      puts other_user.followers.inspect
+      expect(other_user.followers.include?(user)).to be_truthy
     end
 
     it "can unfollow the other user" do
       user.follow(other_user)
       expect(user.following?(other_user)).to be_truthy
-      puts "before unfollow *****", user.active_relationships.inspect
       user.unfollow(other_user)
-      puts "after unfollow *****", user.active_relationships.inspect
       expect(user.following?(other_user)).to_not be_truthy
     end
   end
