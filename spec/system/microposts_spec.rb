@@ -61,7 +61,6 @@ RSpec.describe "Microposts", type: :system do
     end
 
     describe "POST /microposts" do
-
       context "with valid attributes" do
         it "creates a post" do
           expect {
@@ -98,7 +97,6 @@ RSpec.describe "Microposts", type: :system do
     end
 
     describe "DELETE /micropost/id" do
-
       context "as a correct user" do
         it "deletes a post" do
           post = @user.microposts.first

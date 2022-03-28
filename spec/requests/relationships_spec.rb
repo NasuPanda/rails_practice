@@ -22,7 +22,7 @@ RSpec.describe "Relationships", type: :request do
       end
     end
 
-    context "as a non-logged in user" do
+    context "as an anonymous user" do
       it "redirects to login_path" do
         post relationships_path
         expect(response).to redirect_to login_path
@@ -61,7 +61,7 @@ RSpec.describe "Relationships", type: :request do
       end
     end
 
-    context "as a non-logged in user" do
+    context "as an anonymous user" do
       let!(:relationship) { FactoryBot.create(:relationship) }
 
       it "redirects to login_path" do

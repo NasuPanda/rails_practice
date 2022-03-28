@@ -8,6 +8,7 @@ RSpec.describe "Users", type: :system do
   describe "POST /users" do
     context "with valid information" do
       let(:valid_user_params) { FactoryBot.attributes_for(:user) }
+
       it "has a info message" do
         visit signup_path
         fill_in "Name", with: valid_user_params[:name]
@@ -41,8 +42,8 @@ RSpec.describe "Users", type: :system do
     it "doesn't display inactivated user" do
       inactivated_user = FactoryBot.create(:user, :inactivated)
       log_in user
-      get users_path
-      expect(response.body).to_not include inactivated_user.name
+      visit users_path
+      expect(page).to_not have_content(inactivated_user.name)
     end
 
     describe "delete link" do
@@ -65,7 +66,6 @@ RSpec.describe "Users", type: :system do
       end
     end
   end
-
 
   describe "GET /users/id" do
     describe "following and followers" do
@@ -104,7 +104,7 @@ RSpec.describe "Users", type: :system do
       end
     end
 
-    context "as a non-logged in user" do
+    context "as an anonymous user" do
       it "redirects to login_path" do
         get following_user_path(user)
         expect(response).to redirect_to login_path
@@ -135,7 +135,7 @@ RSpec.describe "Users", type: :system do
       end
     end
 
-    context "as a non-logged in user" do
+    context "as an anonymous user" do
       it "redirects to login_path" do
         get followers_user_path(user)
         expect(response).to redirect_to login_path

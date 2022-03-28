@@ -22,7 +22,7 @@ RSpec.describe "Users", type: :request do
       it "redirects to root" do
         log_in user
         get user_path(inactivated_user)
-        expect(response).to redirect_to root_url
+        expect(response).to redirect_to root_path
       end
     end
   end
@@ -45,7 +45,7 @@ RSpec.describe "Users", type: :request do
       it "redirects to root" do
         post users_path, params: { user: valid_user_params }
         created_user = User.last
-        expect(response).to redirect_to root_url
+        expect(response).to redirect_to root_path
       end
 
       it "exists 1 email" do
@@ -112,7 +112,7 @@ RSpec.describe "Users", type: :request do
 
       it "redirects to root" do
         get edit_user_path(user)
-        expect(response).to redirect_to root_url
+        expect(response).to redirect_to root_path
       end
     end
 
@@ -223,7 +223,7 @@ RSpec.describe "Users", type: :request do
       end
 
       it "redirects to root" do
-        expect(response).to redirect_to root_url
+        expect(response).to redirect_to root_path
       end
     end
   end
@@ -291,7 +291,7 @@ RSpec.describe "Users", type: :request do
 
         it "redirects to root" do
           delete user_path(other_user)
-          expect(response).to redirect_to root_url
+          expect(response).to redirect_to root_path
         end
 
         it "can't delete a user" do

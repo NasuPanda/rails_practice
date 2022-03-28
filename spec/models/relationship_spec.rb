@@ -3,8 +3,10 @@ require 'rails_helper'
 RSpec.describe Relationship, type: :model do
   describe "validation" do
     let(:relationship) { FactoryBot.create(:relationship) }
+    subject { relationship }
 
     context "with valid attributes" do
+      it { is_expected.to be_valid}
     end
 
     context "with invalid attributes" do

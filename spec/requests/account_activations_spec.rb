@@ -9,7 +9,7 @@ RSpec.describe "AccountActivations", type: :request do
     end
 
     context "with valid token and email" do
-      it "activates user" do
+      it "activates a user" do
         get edit_account_activation_path(@user.activation_token, email: @user.email)
         @user.reload
         expect(@user).to be_activated

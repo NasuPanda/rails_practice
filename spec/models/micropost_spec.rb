@@ -5,12 +5,13 @@ RSpec.describe Micropost, type: :model do
   let(:micropost) { FactoryBot.create(:micropost) }
 
   it "is sorted by newest to oldest" do
+    # プライベートメソッドの呼び出し
     FactoryBot.send(:create_posts_different_posting_time)
     expect(FactoryBot.create(:micropost, :most_recent)).to eq Micropost.first
   end
 
   describe "association" do
-    it "destroyed when the associated user is destroyed" do
+    it "is destroyed when the associated user is destroyed" do
       user = micropost.user
       expect {
         user.destroy

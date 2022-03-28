@@ -54,7 +54,7 @@ RSpec.describe "Layouts", type: :system do
       end
     end
 
-    context "as a non logged in user" do
+    context "as an anonymous user" do
       before do
         visit root_path
       end
@@ -103,7 +103,7 @@ RSpec.describe "Layouts", type: :system do
       end
     end
 
-    context "as a non logged in user" do
+    context "as an anonymous user" do
       before do
         visit root_path
       end

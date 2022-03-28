@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   it "saves an email as lower case" do
-    user = FactoryBot.create(:user)
+    user = FactoryBot.build(:user)
     mixed_case_email = "Foo@ExAmPle.coM"
     user.email = mixed_case_email
     user.save
@@ -66,12 +66,12 @@ RSpec.describe User, type: :model do
 
       it "is invalid without a password" do
         user.password = user.password_confirmation = "" * 6
-        expect(user).not_to be_valid
+        expect(user).to_not be_valid
       end
 
       it "is invalid with a too short password" do
         user.password = user.password_confirmation = "abcde"
-        expect(user).not_to be_valid
+        expect(user).to_not be_valid
       end
     end
   end
