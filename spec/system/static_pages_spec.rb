@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe "StaticPages", type: :system do
   before do
-    # jsドライバは不要なのでrack_testを使用
     driven_by(:rack_test)
   end
 
@@ -26,6 +25,20 @@ RSpec.describe "StaticPages", type: :system do
         log_in user_with_relationships
         expect(page).to have_content("#{following} following")
         expect(page).to have_content("#{followers} followers")
+      end
+    end
+
+    describe "feed" do
+      let(:user) { FactoryBot.create(:user, :with_posts) }
+      before do
+        log_in user
+      end
+
+      it "displays correct feeds" do
+        visit root_path
+        user.feed.paginate(page: 1).each do |micropost|
+          expect(page).to have_content(CGI.escapeHTML(micropost.content))
+        end
       end
     end
   end
