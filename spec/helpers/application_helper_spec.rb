@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ApplicationHelper, type: :helper do
   describe "#full_title" do
-    let(:base_title) { 'Ruby on Rails Tutorial Sample App' }
+    let(:base_title) { "Ruby on Rails Tutorial Sample App" }
 
     context "exist argment string" do
       it "returns argment string + base title" do
