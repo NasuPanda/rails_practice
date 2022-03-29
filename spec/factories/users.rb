@@ -1,9 +1,9 @@
 FactoryBot.define do
-  factory :user , aliases: [:followed, :follower] do
+  factory :user, aliases: %i[followed follower] do
     sequence(:name) { |n| "Example User #{n}" }
     sequence(:email) { |n| "example-#{n}@gmail.com" }
-    password { "securePassword" }
-    password_confirmation { "securePassword" }
+    password { 'securePassword' }
+    password_confirmation { 'securePassword' }
     activated { true }
     activated_at { Time.zone.now }
 
@@ -12,10 +12,10 @@ FactoryBot.define do
     end
 
     trait :invalid do
-      name { "" }
-      email { "address@invalid" }
-      password { "short" }
-      password_confirmation { "rack" }
+      name { '' }
+      email { 'address@invalid' }
+      password { 'short' }
+      password_confirmation { 'rack' }
     end
 
     trait :inactivated do
@@ -36,6 +36,5 @@ FactoryBot.define do
         end
       end
     end
-
   end
 end
