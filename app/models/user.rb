@@ -1,26 +1,27 @@
 class User < ApplicationRecord
   has_many :microposts, dependent: :destroy
   has_many :active_relationships,
-    class_name:  "Relationship",
-    foreign_key: "follower_id",
-    dependent:   :destroy
+           class_name: 'Relationship',
+           foreign_key: 'follower_id',
+           dependent: :destroy
   has_many :passive_relationships,
-    class_name:  "Relationship",
-    foreign_key: "followed_id",
-    dependent:   :destroy
+           class_name: 'Relationship',
+           foreign_key: 'followed_id',
+           dependent: :destroy
   has_many :following,
-    through: :active_relationships,
-    source: :followed
+           through: :active_relationships,
+           source: :followed
   has_many :followers,
-    through: :passive_relationships,
-    source: :follower
+           through: :passive_relationships,
+           source: :follower
 
   attr_accessor :remember_token, :activation_token, :reset_token
+
   before_save :downcase_email
   before_create :create_activation_digest
 
   validates :name,  presence: true, length: { maximum: 50 }
-  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i.freeze
   validates :email, presence: true, length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
@@ -28,14 +29,16 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   # 渡された文字列のハッシュ値を返す
-  def User.digest(string)
-    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
-                                                  BCrypt::Engine.cost
-    BCrypt::Password.create(string, cost: cost)
+  def self.digest(string)
+    if ActiveModel::SecurePassword.min_cost
+      BCrypt::Password.create(string, cost: BCrypt::Engine::MIN_COST)
+    else
+      BCrypt::Password.create(string, cost: BCrypt::Engine.cost)
+    end
   end
 
   # ランダムなトークンを返す
-  def User.new_token
+  def self.new_token
     SecureRandom.urlsafe_base64
   end
 
@@ -50,6 +53,7 @@ class User < ApplicationRecord
     # selfが省略されている
     digest = send("#{attribute}_digest")
     return false if digest.nil?
+
     BCrypt::Password.new(digest).is_password?(token)
   end
 
@@ -74,7 +78,7 @@ class User < ApplicationRecord
     update_columns(reset_digest: User.digest(reset_token), reset_sent_at: Time.zone.now)
   end
 
-  #パスワードリセット用のメースを送信
+  # パスワードリセット用のメースを送信
   def send_password_reset_email
     UserMailer.password_reset(self).deliver_now
   end
@@ -86,10 +90,10 @@ class User < ApplicationRecord
 
   # フィード
   def feed
-    part_of_feed = "relationships.follower_id = :id or microposts.user_id = :id"
-    Micropost.left_outer_joins(user: :followers)
-            .where(part_of_feed, { id: id }).distinct
-            .includes(:user, image_attachment: :blob)
+    part_of_feed = 'relationships.follower_id = :id or microposts.user_id = :id'
+    Micropost.left_outer_joins(user: :followers).
+      where(part_of_feed, { id: id }).distinct.
+      includes(:user, image_attachment: :blob)
   end
 
   def follow(other_user)
@@ -108,6 +112,7 @@ class User < ApplicationRecord
   end
 
   private
+
     def downcase_email
       self.email.downcase!
     end
