@@ -1,5 +1,4 @@
 module LoginSupport
-
   module System
     def log_in(user)
       visit login_path
