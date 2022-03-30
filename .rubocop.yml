@@ -1,5 +1,6 @@
-# .rubocop_todo.yml が空になったら、この行は削除する。
-# inherit_from: .rubocop_todo.yml
+inherit_from: .rubocop_todo.yml
+
+
 
 require:
   - rubocop-rails
@@ -10,10 +11,13 @@ AllCops:
   Exclude:
     - "vendor/**/*"
     - "bin/**"
-    - "db/schema.rb"
+    - "db/**/*"
     - "node_modules/**/*"
     - "tmp/**/*"
     - "lib/**/*"
+    - "Gemfile"
+    - "config/**/*"
+    - "app/channels/application_cable/*"
   DisplayCopNames: true
   TargetRubyVersion: 2.6
 
@@ -50,6 +54,21 @@ Style/EmptyElse:
 # https://www.task-notes.com/entry/20160831/1472572735
 Style/FrozenStringLiteralComment:
   Enabled: false
+
+# if/unless内の処理が4行以上のときのみにする
+Style/GuardClause:
+  MinBodyLength: 4
+
+# do .. end から更にメソッドチェーンすると見にくいので
+# auto-correct せず、自分で修正する
+# spec 内は見た目が綺麗になるので許可
+Style/BlockDelimiters:
+  AutoCorrect: false
+  Exclude:
+    - "spec/**/*"
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact
 
 ##################### Lint ##################################
 
@@ -91,3 +110,64 @@ Metrics/MethodLength:
   Max: 20
   Exclude:
     - "db/migrate/*.rb"
+
+# RSpecのみ1ブロックあたりの行数超過を許可
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+
+##################### RSpec ##################################
+# 1exampleの行数
+# デフォルトだと厳しすぎる
+RSpec/ExampleLength:
+  Max: 10
+
+# デフォルト : Start context description with 'when', 'with', or 'without'.
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without
+    - if
+    - unless
+    - for
+    - as
+
+# グループ(describeやcontext)のネスト
+# 3だと厳しい
+RSpec/NestedGroups:
+  Max: 4
+
+# 1exampleあたりのエクスペクテーションの数
+# パフォーマンスの問題さえなければ1example 1expectationの方が良い
+# aggregate_failuresを使う場合等を考慮すると1は厳しい
+RSpec/MultipleExpectations:
+  Max: 4
+
+##################### Railsチュートリアル 一時無視 ##################################
+
+Naming/AccessorMethodName:
+  Enabled: false
+
+# バリデーションをスキップするメソッドは警告が出る
+# update_attribute等
+Rails/SkipsModelValidations:
+  Enabled: false
+
+# ヘルパーメソッドでインスタンス変数を使わないこと
+# Railsチュートリアルでは@current_userでガッツリ使ってしまっているので無視する
+Rails/HelperInstanceVariable:
+  Enabled: false
+
+# 双方向の関連付けで inverse_of を指定する必要がある
+Rails/InverseOf:
+  Enabled: false
+
+# &.演算子
+Style/SafeNavigation:
+  Enabled: false
+
+# インスタンス変数の使用は避けること
+# 今回は除外するが、今後は極力避ける
+RSpec/InstanceVariable:
+  Enabled: false
