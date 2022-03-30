@@ -1,21 +1,22 @@
 require 'rails_helper'
 
-RSpec.describe "Layouts", type: :system do
+RSpec.describe 'Layouts', type: :system do
   let(:user) { FactoryBot.create(:user) }
+
   before do
     driven_by(:rack_test)
   end
 
-  describe "header" do
-    context "as a logged in user" do
+  describe 'header' do
+    context 'as a logged in user' do
       before do
         log_in user
         visit root_path
       end
 
-      describe "Account" do
+      describe 'Account' do
         before do
-          click_link "Account"
+          click_link 'Account'
         end
 
         it "click the Profile to move to user's profile" do
@@ -28,93 +29,93 @@ RSpec.describe "Layouts", type: :system do
           expect(page).to have_current_path edit_user_path(user)
         end
 
-        it "click the Log out to move to log out" do
+        it 'click the Log out to move to log out' do
           click_link 'Log out'
           expect(page).to have_current_path root_path
         end
       end
 
-      it "click the sample app to move to root" do
+      it 'click the sample app to move to root' do
         # rootに遷移することを確認したいのでhelpに移動する
-        click_link "Help"
-        click_link "sample app"
+        click_link 'Help'
+        click_link 'sample app'
         expect(page).to have_current_path root_path
       end
 
-      it "click the Home to move to root" do
+      it 'click the Home to move to root' do
         # rootに遷移することを確認したいのでhelpに移動する
-        click_link "Help"
-        click_link "Home"
+        click_link 'Help'
+        click_link 'Home'
         expect(page).to have_current_path root_path
       end
 
-      it "click the Help to move to help" do
-        click_link "Help"
+      it 'click the Help to move to help' do
+        click_link 'Help'
         expect(page).to have_current_path help_path
       end
     end
 
-    context "as an anonymous user" do
+    context 'as an anonymous user' do
       before do
         visit root_path
       end
 
-      it "click the Log in to move to log in" do
+      it 'click the Log in to move to log in' do
         click_link 'Log in'
         expect(page).to have_current_path login_path
       end
 
-      it "click the sample app to move to root" do
+      it 'click the sample app to move to root' do
         # rootに遷移することを確認したいのでhelpに移動する
-        click_link "Help"
-        click_link "sample app"
+        click_link 'Help'
+        click_link 'sample app'
         expect(page).to have_current_path root_path
       end
 
-      it "click the Home to move to root" do
+      it 'click the Home to move to root' do
         # rootに遷移することを確認したいのでhelpに移動する
-        click_link "Help"
-        click_link "Home"
+        click_link 'Help'
+        click_link 'Home'
         expect(page).to have_current_path root_path
       end
 
-      it "click the Help to move to help" do
-        click_link "Help"
+      it 'click the Help to move to help' do
+        click_link 'Help'
         expect(page).to have_current_path help_path
       end
     end
   end
 
-  describe "footer" do
-    context "as a logged in user" do
+  describe 'footer' do
+    context 'as a logged in user' do
       before do
         log_in user
         visit root_path
       end
 
-      it "click the About to move to about" do
-        click_link "About"
+      it 'click the About to move to about' do
+        click_link 'About'
         expect(page).to have_current_path about_path
       end
 
-      it "click the Contact to move to contact" do
-        click_link "Contact"
+      it 'click the Contact to move to contact' do
+        click_link 'Contact'
         expect(page).to have_current_path contact_path
       end
     end
 
-    context "as an anonymous user" do
+    context 'as an anonymous user' do
       before do
         visit root_path
       end
 
-      it "click the About to move to about" do
-        click_link "About"
+      it 'click the About to move to about' do
+        click_link 'About'
         expect(page).to have_current_path about_path
       end
 
-      it "click the Contact to move to contact" do
-        click_link "Contact"
+      it 'click the Contact to move to contact' do
+        click_link 'Contact'
         expect(page).to have_current_path contact_path
       end
     end
