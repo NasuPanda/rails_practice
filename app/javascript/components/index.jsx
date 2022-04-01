@@ -12,13 +12,11 @@ const PetsTable = (props) => {
     );
     return table;
   }
-
-  const initial_table = createTable(pets);
-  const [table, setTable] = useState(initial_table);
+  const [table, setTable] = useState(createTable(pets));
 
   const handleClickAllAnimalVisibilityToggleButton = () => {
-    const displayTable = createTable(pets);
-    setTable(displayTable);
+    const displayAnimals = createTable(pets);
+    setTable(displayAnimals);
   }
 
   const handleClickCatVisibilityToggleButton = () => {
@@ -34,8 +32,11 @@ const PetsTable = (props) => {
   }
 
   const handleSubmit = (e) => {
+    e.preventDefault();
+
     const species = e.target[0].value;
     const name = e.target[1].value;
+
     if (!species || !name) {
       alert("Please input")
       return
@@ -43,7 +44,6 @@ const PetsTable = (props) => {
       pets.push({ name: name, species: species })
       setTable(createTable(pets))
     }
-    e.preventDefault();
   }
 
   return (
