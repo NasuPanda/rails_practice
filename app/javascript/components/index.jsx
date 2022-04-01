@@ -1,94 +1,67 @@
 import { useState } from 'react';
 
-const PetsTable = (props) => {
-  const pets = props.pets;
+const Showcase = (props) => {
+  const nameLengthThreshold = 8;
+  const [isVisible, setIsVisible] = useState(true);
 
-  const createTable = (elements) => {
-    const table = elements.map((element) =>
-      <tr>
-        <td>{element.name}</td>
-        <td>{element.species}</td>
-      </tr>
-    );
-    return table;
-  }
-  const [table, setTable] = useState(createTable(pets));
-
-  const handleClickAllAnimalVisibilityToggleButton = () => {
-    const displayAnimals = createTable(pets);
-    setTable(displayAnimals);
-  }
-
-  const handleClickCatVisibilityToggleButton = () => {
-    const cats = pets.filter(pet => pet.species !== "dog");
-    const displayCats = createTable(cats);
-    setTable(displayCats);
-  }
-
-  const handleClickDogVisibilityToggleButton = () => {
-    const dogs = pets.filter(pet => pet.species !== "cat");
-    const displayDogs = createTable(dogs);
-    setTable(displayDogs);
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const species = e.target[0].value;
-    const name = e.target[1].value;
-
-    if (!species || !name) {
-      alert("Please input")
-      return
-    } else {
-      pets.push({ name: name, species: species })
-      setTable(createTable(pets))
-    }
+  const handleClickVisibilityToggleButton = () => {
+    setIsVisible(!isVisible)
   }
 
   return (
     <>
-    {table}
-    <button onClick={handleClickAllAnimalVisibilityToggleButton}>
-      All animal
-    </button>
-    <button onClick={handleClickCatVisibilityToggleButton}>
-      Cat
-    </button>
-    <button onClick={handleClickDogVisibilityToggleButton}>
-      Dog
-    </button>
-    {/* フォーム */}
-    <form onSubmit={handleSubmit}>
-      <label>
-        Select Dog/Cat
-        <select>
-          <option value="dog">dog</option>
-          <option value="cat">cat</option>
-        </select>
-      </label>
-      <label>
-        Put a name
-        <input name="name" type="text" />
-      </label>
-      <input type="submit" value="Submit" />
-    </form>
+      { /*中括弧の中でprops、及びあらゆるJSの式を使うことが出来る*/ }
+      <p>Hi, I'm {props.name}</p>
+      <p>
+        The answer is {props.answer}, so the doubled answer is {''}
+        {props.answer * 2}.
+      </p>
+
+      {/* 論理式を使って表示を切り替えたり出来る */}
+      {isVisible && <p>This is Visible</p>}
+      <button onClick={handleClickVisibilityToggleButton}>
+        Toggle visibility
+      </button>
+
+      {props.name.length >= nameLengthThreshold ? (
+        <p>name.length is equal or longer than {nameLengthThreshold}.</p>
+      ) : (
+        <p>name.length is less than {nameLengthThreshold}.</p>
+      )}
+
+      <ul>
+        {props.items.map((item) => {
+          <li key={item.id}>
+            {item.name} is {item.price} Yen.
+          </li>
+        })}
+      </ul>
     </>
   );
 }
 
 const App = () => {
-  const pets = [
-    { name: "Pochi", species: "dog" },
-    { name: "Tama", species: "cat" },
-    { name: "Mike", species: "cat" },
-    { name: "Hachi", species: "dog" },
-  ];
+  const name = 'Nasu Panda';
+  const answer = 20;
+  const items = [
+    {
+      id: 1,
+      name: "T-shirt",
+      price: 100,
+    },
+    {
+      id: 2,
+      name: "Hoodie",
+      price: 300,
+    },
+  ]
   return(
-    <PetsTable
-      pets={pets}>
-    </PetsTable>
-    )
+    <Showcase
+      name={name}
+      answer={answer}
+      items={items}
+    ></Showcase>
+  )
 };
 
 export default App;
