@@ -33,6 +33,19 @@ const PetsTable = (props) => {
     setTable(displayDogs);
   }
 
+  const handleSubmit = (e) => {
+    const species = e.target[0].value;
+    const name = e.target[1].value;
+    if (!species || !name) {
+      alert("Please input")
+      return
+    } else {
+      pets.push({ name: name, species: species })
+      setTable(createTable(pets))
+    }
+    e.preventDefault();
+  }
+
   return (
     <>
     {table}
@@ -45,6 +58,21 @@ const PetsTable = (props) => {
     <button onClick={handleClickDogVisibilityToggleButton}>
       Dog
     </button>
+    {/* フォーム */}
+    <form onSubmit={handleSubmit}>
+      <label>
+        Select Dog/Cat
+        <select>
+          <option value="dog">dog</option>
+          <option value="cat">cat</option>
+        </select>
+      </label>
+      <label>
+        Put a name
+        <input name="name" type="text" />
+      </label>
+      <input type="submit" value="Submit" />
+    </form>
     </>
   );
 }
