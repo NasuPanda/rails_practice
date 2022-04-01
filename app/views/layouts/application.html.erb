@@ -6,15 +6,21 @@
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag    'application', media: 'all',
                               'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application',
-                              'data-turbolinks-track': 'reload' %>
+    <%= javascript_bundle_tag 'main' %>
     <%= render 'layouts/shim' %>
   </head>
   <body>
     <%= render 'layouts/header' %>
     <div class="container">
+    <!-- flashのmessage_type, messageを利用してスタイルを割り当てつつメッセージを表示 -->
+      <% flash.each do |message_type, message| %>
+        <%= content_tag(:div, message, class: "alert alert-#{message_type}") %>
+      <% end %>
+      <!--ここにReact-->
+      <div id="app"></div>
       <%= yield %>
-    </div>
     <%= render 'layouts/footer' %>
+    <%= debug(params) if Rails.env.development? %>
+    </div>
   </body>
 </html>
