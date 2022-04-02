@@ -6,6 +6,7 @@ import "channels"
 import "jquery"
 import "bootstrap"
 import App from "components"
+import { resolve } from "core-js/fn/promise"
 
 Rails.start()
 Turbolinks.start()
